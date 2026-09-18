@@ -1,1 +1,39 @@
-
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waiter Panel - DMC</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-4">
+<div class="max-w-md mx-auto">
+<h1 class="text-2xl font-bold mb-4">🔔 Waiter Panel</h1>
+<button onclick="loadOrders()" class="bg-blue-600 text-white px-4 py-2 rounded-lg mb-4 w-full">Refresh Orders</button>
+<div id="orders" class="space-y-3"></div>
+<p class="text-xs text-gray-400 mt-4 text-center">Auto refresh: 5 sec</p>
+</div>
+<script>
+function loadOrders(){
+const orders=JSON.parse(localStorage.getItem('dmc_orders')||'[]').reverse();
+const div=document.getElementById('orders');
+if(orders.length==0){div.innerHTML='<p class="text-center text-gray-500">Kei order chaina</p>';return;}
+div.innerHTML=orders.map((o,i)=>`
+<div class="bg-white p-4 rounded-xl shadow border-l-4 border-orange-500">
+<div class="flex justify-between"><b>Table ${o.table}</b><span class="text-xs">${o.time}</span></div>
+<p class="text-sm mt-2">${o.cart.map(c=>c.name).join(', ')}</p>
+<p class="font-bold mt-1">Rs. ${o.total} - <span class="text-green-600">${o.status}</span></p>
+<button onclick="markDone(${orders.length-1-i})" class="mt-2 bg-green-500 text-white px-3 py-1 rounded text-sm">Done ✅</button>
+</div>`).join('');
+}
+function markDone(index){
+let orders=JSON.parse(localStorage.getItem('dmc_orders')||'[]');
+orders[index].status='completed';
+localStorage.setItem('dmc_orders',JSON.stringify(orders));
+loadOrders();
+}
+loadOrders();
+setInterval(loadOrders,5000);
+</script>
+</body>
+</html>
