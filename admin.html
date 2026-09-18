@@ -1,1 +1,31 @@
-
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - DMC Restro</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white p-4">
+<div class="max-w-md mx-auto">
+<h1 class="text-2xl font-bold mb-4">👑 Admin Panel</h1>
+<div class="grid grid-cols-2 gap-3 mb-6">
+<div class="bg-gray-800 p-4 rounded-xl text-center"><p class="text-sm text-gray-400">Today Orders</p><p class="text-2xl font-bold" id="totalOrders">0</p></div>
+<div class="bg-gray-800 p-4 rounded-xl text-center"><p class="text-sm text-gray-400">Total Sales</p><p class="text-2xl font-bold" id="totalSales">Rs. 0</p></div>
+</div>
+<button onclick="load()" class="bg-white text-black px-4 py-2 rounded-lg w-full mb-4">Refresh</button>
+<div id="list" class="space-y-2"></div>
+<button onclick="clearAll()" class="mt-6 bg-red-600 w-full py-2 rounded-lg">Clear All Data</button>
+</div>
+<script>
+function load(){
+const orders=JSON.parse(localStorage.getItem('dmc_orders')||'[]');
+document.getElementById('totalOrders').innerText=orders.length;
+document.getElementById('totalSales').innerText='Rs. '+orders.reduce((s,o)=>s+o.total,0);
+document.getElementById('list').innerHTML=orders.reverse().map(o=>`<div class="bg-gray-800 p-3 rounded-lg text-sm"><b>Table ${o.table}</b> - Rs.${o.total} - ${o.time}<br>${o.cart.map(c=>c.name).join(', ')}</div>`).join('');
+}
+function clearAll(){if(confirm('Sab delete garne?')){localStorage.removeItem('dmc_orders');load();}}
+load();
+</script>
+</body>
+</html>
