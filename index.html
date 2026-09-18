@@ -1,1 +1,56 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMC Restro - Menu</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-4">
+<div class="max-w-md mx-auto bg-white rounded-2xl shadow-lg p-6">
+<h1 class="text-2xl font-bold text-center">🍽️ DMC Restro</h1>
+<p class="text-center text-gray-500 text-sm mb-4" id="tableInfo">Table: 5</p>
 
+<div class="space-y-3" id="menu">
+<div class="flex justify-between items-center border p-3 rounded-xl">
+<div><h3 class="font-bold">Chicken Momo</h3><p class="text-sm text-gray-500">Rs. 250</p></div>
+<button onclick="addToCart('Chicken Momo',250)" class="bg-orange-500 text-white px-4 py-2 rounded-full">Add</button>
+</div>
+<div class="flex justify-between items-center border p-3 rounded-xl">
+<div><h3 class="font-bold">Veg Chowmein</h3><p class="text-sm text-gray-500">Rs. 180</p></div>
+<button onclick="addToCart('Veg Chowmein',180)" class="bg-orange-500 text-white px-4 py-2 rounded-full">Add</button>
+</div>
+<div class="flex justify-between items-center border p-3 rounded-xl">
+<div><h3 class="font-bold">Cold Beer</h3><p class="text-sm text-gray-500">Rs. 400</p></div>
+<button onclick="addToCart('Cold Beer',400)" class="bg-orange-500 text-white px-4 py-2 rounded-full">Add</button>
+</div>
+</div>
+
+<div class="mt-6 border-t pt-4">
+<h3 class="font-bold">Cart: <span id="cartCount">0</span> items</h3>
+<p class="font-bold">Total: Rs. <span id="total">0</span></p>
+<button onclick="placeOrder()" class="w-full bg-green-600 text-white py-3 rounded-xl mt-3 font-bold">Order Garne</button>
+</div>
+
+<p class="text-center text-xs text-gray-400 mt-4" id="status">Ready</p>
+</div>
+
+<script>
+let cart=[],total=0;
+const table=new URLSearchParams(window.location.search).get('table')||'5';
+document.getElementById('tableInfo').innerText='Table: '+table;
+function addToCart(name,price){cart.push({name,price});total+=price;update();}
+function update(){document.getElementById('cartCount').innerText=cart.length;document.getElementById('total').innerText=total;}
+function placeOrder(){
+if(cart.length==0){alert('Cart khali cha!');return;}
+const orders=JSON.parse(localStorage.getItem('dmc_orders')||'[]');
+orders.push({table,cart,total,time:new Date().toLocaleTimeString(),status:'new'});
+localStorage.setItem('dmc_orders',JSON.stringify(orders));
+document.getElementById('status').innerText='✅ Order gayo! Waiter lai jancha';
+alert('Order success! Table '+table);
+cart=[];total=0;update();
+}
+</script>
+</div>
+</body>
+</html>
